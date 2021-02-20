@@ -1,0 +1,5 @@
+Time_per_image: 1
+Rest_time_between_images: 4
+Images_file->images_random_1.txt
+Initial_video->latemo/video.mp4
+Duration_video: 5

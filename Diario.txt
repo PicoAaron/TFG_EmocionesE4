@@ -1,0 +1,95 @@
+
+
+1) Búsqueda de datasets y clasificación de los mismos en un documento.
+
+	El utilizado previamente era WESAD
+
+	Los datasets que parecen más útiles para nuestro trabajo son:
+		
+		K-EmoCon:
+			https://www.nature.com/articles/s41597-020-00630-y#Sec17
+			https://zenodo.org/record/3931963
+
+
+		IoBT-VISTEC:
+			https://github.com/IoBT-VISTEC/EEG-Emotion-Recognition-INTERFACES-datasets	
+
+
+2) Programar aplicación para obtener nuestro propio dataset de muestras.
+
+	La aplicación muestra las imágenes del dataset, para recoger los datos
+	fisiológicos que puede recoger la pulsera que produce cada una de estas
+	en el espectador.
+	
+	Entre ellas se intercala una imagen o video "neutro" aún por determinar
+	con el fin de que se normalice el estado del espectador entre una imágen y otra.
+	Por defecto será una imagen en negro.
+
+	Antes de comenzar con la muestra de las imágenes también se muestra un video neutro
+	con el mismo fin.
+
+
+
+3) El video del que se habla en el artículo, color bars, no se ha podido obtener. 
+
+	En su lugar, se ha encotrado el dataset LATEMO-E, con videos extraídos de diferentes películas junto a las emociones
+	que provocan y arousal/valence. Algunos de estos son para una emoción neutra, podría servir de sustituto.
+
+	LATEMO-E:
+		https://www.scielo.br/scielo.php?script=sci_arttext&pid=S2358-18832019000200473
+		https://figshare.com/articles/dataset/LATEMO_A_film_database_to_eliciting_discrete_emotions_and_evaluating_emotional_dimensions_for_Latin-Americans/5372782/1
+
+
+
+4) El dataset de imágenes elegido, OASIS, contenía imágenes de una resolución muy baja, por lo que se ha decidido
+sustituirlo por el dataset IAPS.
+
+	IAPS:
+		http://scielo.isciii.es/scielo.php?script=sci_arttext&pid=S0212-97282013000300036
+
+	IAPS en un dataset privado que ya hemos obtenido.
+	
+	Parece que también tiene valoraciones específicas para españoles. Debemos buscar estos valores de valence/arousal
+	en lugar de utilizar los americanos para un mejor funcionamiento.
+
+
+5) Hemos cambiado de nuevo el dataset de imágenes a utilizar, ya que se ha encontrado el proyecto EmoMadrid de la Universidad Autónoma de Madrid.
+Las imágenes se ven correctamente ya que su resolución es de 1024x768, y los datos han sido obtenidos con participantes de nacionalidad española.
+Además, podremos seguir el mismo procedimiento con sus tiempos que tienen indicado en la web.
+El dataset es privado y se ha tenido que pedir acceso.
+
+	EmoMadrid:
+		Español: http://www.psicologiauam.es/CEACO/EmoMadridEsp.htm
+		Inglés: http://www.psicologiauam.es/CEACO/EmoMadrid.htm
+
+
+6) Tras ciertas complicaciones, se ha conseguido cambiar la aplicación para reproducir un video antes de comenzar a mostrar las imágenes.
+
+	El video se reproduce para captar el estado normal del participante y comenzar las imágenes desde ese estado inicial.
+	Por tanto, el video debe inducir ese estado.
+	Por ahora, el video que se muestra es "La Vie d'Adele (VDA).mp4" del dataset LATEMO-E, que según el estudio produce un estado neutro.
+
+
+7) Cambios efectuados en aplicación
+
+	Para que sea lo más similar a la manera en la que se asignaron sus valores a las imágenes:
+		
+		- Se muestra un total de 150 imágenes.
+		- Entre las imágenes lo que se muestra es una pantalla en blanco (en el centro se muestra el número de imagen).
+		- Cada imagen se muestra 1 segundo, el tiempo entre imágenes es 4 segundos.
+		- Cada 25 imágenes se realiza un descanso de 15 segundos (Pantalla en blanco. Escrito en el centro: "Descanso (15 segundos)" ).
+		
+	Adicional:
+	
+		- Las imágenes son reescaladas para ocupar el tamaño de la ventana (se mantiene la relación de aspecto).
+
+8) Cambios en la aplicación:
+	
+	- Ya no se muestra el número entre las imágenes. Únicamente la pantalla en blanco.
+	- Se mantiene el mensaje para los descansos.
+	- Se guarda el timestamp en el que es mostrado cada imagen en el fichero "timestamps.txt".
+		Se utiliza el siguiente formato:
+			<ruta imagen> yyyy-MM-dd HH:mm.ss
+
+
+		

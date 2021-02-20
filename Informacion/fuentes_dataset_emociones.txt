@@ -1,0 +1,19 @@
+https://archive.ics.uci.edu/ml/datasets/WESAD+%28Wearable+Stress+and+Affect+Detection%29#        -> WESAD
+
+https://archive.ics.uci.edu/ml/datasets/PPG-DaLiA NO (etiqueta actividades)                      -> PPG-DaLiA
+
+https://zenodo.org/record/3931963 SI                                                             -> K-EmoCon
+
+https://github.com/IoBT-VISTEC/EEG-Emotion-Recognition-INTERFACES-datasets SI
+
+https://affect.media.mit.edu/share-data.php NO
+
+https://www.nature.com/articles/s41597-019-0209-0 PROBABLE
+https://springernature.figshare.com/collections/A_dataset_of_continuous_affect_annotations_and_physiological_signals_for_emotion_analysis/4260668/1
+https://springernature.figshare.com/articles/dataset/CASE_Dataset-full/8869157
+
+
+http://mhug.disi.unitn.it/wp-content/ASCERTAIN/ascertain.html PROBABLE
+
+http://www.eecs.qmul.ac.uk/mmv/datasets/amigos/index.html PROBABLE
+
