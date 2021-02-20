@@ -83,13 +83,80 @@ El dataset es privado y se ha tenido que pedir acceso.
 	
 		- Las imágenes son reescaladas para ocupar el tamaño de la ventana (se mantiene la relación de aspecto).
 
+
 8) Cambios en la aplicación:
 	
 	- Ya no se muestra el número entre las imágenes. Únicamente la pantalla en blanco.
 	- Se mantiene el mensaje para los descansos.
 	- Se guarda el timestamp en el que es mostrado cada imagen en el fichero "timestamps.txt".
 		Se utiliza el siguiente formato:
-			<ruta imagen> yyyy-MM-dd HH:mm.ss
+			<ruta imagen> HH:mm.ss
 
+
+9) La aplicación para obtener las muestras con ayuda de la pulsera está acabada. Ya solo queda decidir la secuencia de imágenes a mostrar.
+Que aún desconocemos a que atenernos para evitar fallos como el efecto halo.
+
+
+10) He recibido la pulsera Empatica E4. 
+	Necesito crear los datasets relacionando los timestamps de las imágenes mostradas al participante con los datos fisiológicos recogidos
+	por la pulsera. Realizaremos un programa que nos genere los archivos automáticamente.
+
+	Problema:
+		Los datos en fichero csv que genera la pulsera no traen timestamp por cada muestra, solo uno que indica el inicio de la sesión.
+
+	Primero hay que tratar estos datos, para asignar a cada muestra su timestamp. Hay una plantilla de excel en el apartado de support de la
+	página oficial de la Empatica E4 que indica como realizar esto. No es complicado, pero sería muy laborioso hacerlo para todos los ficheros
+	de todos los participantes.
+
+	Solución 1:
+	Por lo que en una primera fase del programa para generar los datasets crearemos estos datos ya procesados
+	mediante el código; y una vez tengamos estos será cuando elaboremos los datasets emparejandolos con los tiempos de las imágenes.
+
+	Solución 2:
+	Después de leer el timestamp de una imagen, a partir de del timestamp inicial y de la frecuencia de muestreo calcular la línea inicial
+	y final de muestras a obtener.
+	
+	La segunda opción sería más rápida si podemos diriginos directamente a una línea en concreto del fichero, ya que con la opción 1 tendríamos
+	que ir leyendo timestamps uno a uno hasta obtener los deseados.
+
+	Así que la opción 2 será la que implementaré en un principio.
+
+	Datos ofrecidos por la pulera:
+
+		Cada uno de los archivos .csv:
+			Timestamp inicio de sesión
+			Frecuencia de muestreo (Hz)
+			Valor 1
+			Valor 2
+			...
+			Valor n
+
+	Fase 1 (opcional, solo si aplicamos la solución 1) Datos de la pulsera procesados:
+
+		Cada uno de los archivos .csv:
+			Timestamp inicio de sesión
+			Frecuencia de toma de muestras (Hz)
+			Valor 1; timestamp 1
+			Valor 2; timestamp 2
+			...
+			Valor n; timestamp n
+
+	Resultado del programa:
+
+		Carpeta usuario 1:
+
+			eda_1_1.csv //muestras de eda registradas del usuario 1 viendo la imagen 1
+			eda_1_2.csv //muestras de eda registradas del usuario 1 viendo la imagen 2
+			hr_1_1.csv //muestras de hr registradas del usuario 1 viendo la imagen 1
+			hr_1_2.csv //muestras de hr registradas del usuario 1 viendo la imagen 2
+			...
+		
+			Cada fichero csv:
+				
+				Valor 1; timestamp 1
+				Valor 2; timestamp 2
+				...
+			
+				
 
 		
