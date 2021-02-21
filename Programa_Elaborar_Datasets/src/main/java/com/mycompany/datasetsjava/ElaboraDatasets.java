@@ -6,11 +6,15 @@
 package com.mycompany.datasetsjava;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -24,7 +28,7 @@ public class ElaboraDatasets {
     private static FileWriter f_write;
     static String dir_read = "Data";
     static String dir_write = "Dataset";
-    static final int num_images = 150;
+    static final int num_images = 50;
     static final int num_persons = 1;
     
     private static String nameFileToRead(int i, int person){
@@ -60,11 +64,31 @@ public class ElaboraDatasets {
     }
     
     private static int calculateFirstLine(Timestamp t_session, int freq, Timestamp t_image){
-        return 0;
+        //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
+        //recoger las muestras dentro de un rango de tiempo
+        long t_i = t_image.getTime() - 2;
+        long t_s = t_session.getTime();
+        
+        int line = (int)(t_i - t_s) * freq;
+        System.out.println(t_i);
+        System.out.println(t_s);
+        System.out.println(line);
+        
+        return  line;
     }
     
     private static int calculateLastLine(Timestamp t_session, int freq, Timestamp t_image){
-        return 0;
+        //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
+        //recoger las muestras dentro de un rango de tiempo
+        
+        long t_i = t_image.getTime() + 3;
+        long t_s = t_session.getTime();
+        
+        int line = (int)(t_i - t_s) * freq;
+        
+        //System.out.println(line);
+        
+        return line;
     }
     
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
@@ -73,20 +97,22 @@ public class ElaboraDatasets {
 
               try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
+                  File fichero = new File(dir_write + "/" + Integer.toString(n_person));
+                  fichero.mkdirs();
                   f_write = new FileWriter(nameFileToWrite(n_file, n_person , n_image));
 
                   b = new BufferedReader(f_read);
-
-                  Timestamp t_session = new Timestamp(Long.parseLong(b.readLine()));
-                  int freq = Integer.parseInt(b.readLine());
+                  
+                  Timestamp t_session = new Timestamp( Long.parseLong( b.readLine().split("\\.")[0] ) );
+                  int freq = Integer.parseInt(b.readLine().split("\\.")[0]);
 
                   int firstLine = calculateFirstLine(t_session, freq, t_image); 
                   int lastLine = calculateLastLine(t_session, freq, t_image);
                   
-                  int k=0;
-                  for(; k<firstLine; k++) b.readLine();
+                  int line=0;
+                  for(; line<firstLine; line++) b.readLine();
                   
-                  for(; k<=lastLine; k++){
+                  for(; line<=lastLine; line++){
                       String cadena = b.readLine();
                       cadena += ";" + t_session.toString();
                       f_write.write(cadena);
@@ -94,9 +120,9 @@ public class ElaboraDatasets {
                   
                   f_write.close();
                   f_read.close();
-
+                  
               }catch(FileNotFoundException e){
-                  System.err.print("ERROR. Fichero " + nameFileToRead(n_file, 1) + " no encontrado");
+                  System.err.println("ERROR. Fichero " + nameFileToRead(n_file, 1) + " no encontrado");
               }catch(IOException e){
                   System.err.print(e);
               }
@@ -105,7 +131,7 @@ public class ElaboraDatasets {
     }
     
     
-    public static void main(String args[]){
+    public static void main(String args[]) throws ParseException{
     
         for(int n_person = 1; n_person<=num_persons; n_person++){
             
@@ -114,12 +140,18 @@ public class ElaboraDatasets {
                 buffer = new BufferedReader(f_times_images);
                 
                 for(int n_image = 1; n_image<=num_images; n_image++){
-                    Timestamp t_image = new Timestamp(Long.parseLong(buffer.readLine()));;
+                    //Date d = new Date();
+                    Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(buffer.readLine());
+                    Timestamp t_image = new Timestamp(d.getTime());
+                    System.out.println(t_image.toString());
+                    //t_image = new Timestamp(DateFormat.parse(buffer.readLine()));
+                    //System.out.println(t_image.toString());
+                    
                     makeDataset(n_person, n_image, t_image);
                 }
         
             }catch(FileNotFoundException e){
-                System.err.print("ERROR. Fichero de tiempos para el participante " + Integer.toString(n_person) + " no encontrado");
+                System.err.println("ERROR. Fichero de tiempos para el participante " + Integer.toString(n_person) + " no encontrado");
             }catch(IOException e){
                   System.err.print(e);
             }
