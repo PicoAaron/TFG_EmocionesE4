@@ -48,30 +48,32 @@ public class ElaboraDatasets {
     }
     
     private static String nameFileToWrite(int i, int person,int image){
-    
-        String dir = dir_write + "/" + Integer.toString(person) + "/";
         
+        String file="";
         switch(i){
-            case 0: return dir + "EDA_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            case 1: return dir + "ACC_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            case 2: return dir + "BVP_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            case 3: return dir + "HR_"  + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            case 4: return dir + "IBI_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            case 5: return dir + "TEMP_"+ Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
-            default: return null;
+            case 0: file = "EDA"; break;
+            case 1: file = "ACC"; break;
+            case 2: file = "BVP"; break;
+            case 3: file = "HR"; break;
+            case 4: file = "IBI"; break;
+            case 5: file = "TEMP"; break;
         }
+        
+        String dir = dir_write + "/" + Integer.toString(person) + "/";
+        dir += file + "_" + Integer.toString(person) +"/";
+        
+        return dir + file + "_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
         
     }
     
     private static int calculateFirstLine(Timestamp t_session, int freq, Timestamp t_image){
         //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
         //recoger las muestras dentro de un rango de tiempo
-        long t_i = t_image.getTime() - 2;
+        long t_i = t_image.getTime() - (2 * 1000);
         long t_s = t_session.getTime();
         
-        int line = (int)(t_i - t_s) * freq;
-        System.out.println(t_i);
-        System.out.println(t_s);
+        int line = (int)((t_i - t_s)/1000) * freq;
+        
         System.out.println(line);
         
         return  line;
@@ -81,31 +83,60 @@ public class ElaboraDatasets {
         //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
         //recoger las muestras dentro de un rango de tiempo
         
-        long t_i = t_image.getTime() + 3;
+        long t_i = t_image.getTime() + (3 * 1000);
         long t_s = t_session.getTime();
         
-        int line = (int)(t_i - t_s) * freq;
+        int line = (int)((t_i - t_s)/1000) * freq;
         
-        //System.out.println(line);
+        System.out.println(line);
         
         return line;
+    }
+    
+    private static void createDirs(int n_person){
+        File fichero;
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/EDA_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/ACC_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/BVP_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/HR_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/TEMP_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
+        
+        
     }
     
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
     
         for(int n_file=0; n_file<=5; n_file++){
-
+            createDirs(n_person);
               try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
-                  File fichero = new File(dir_write + "/" + Integer.toString(n_person));
-                  fichero.mkdirs();
                   f_write = new FileWriter(nameFileToWrite(n_file, n_person , n_image));
 
                   b = new BufferedReader(f_read);
                   
-                  Timestamp t_session = new Timestamp( Long.parseLong( b.readLine().split("\\.")[0] ) );
+                  //long aux = Long.parseLong( b.readLine().split("\\.")[0] );
+                 
+                  //aux = (aux/86400) + new Date(1970, 1, 1).getTime() + (1/24);
+                  
+                  Timestamp t_session = new Timestamp( Long.parseLong( b.readLine().split("\\.")[0] ) *1000 );
                   int freq = Integer.parseInt(b.readLine().split("\\.")[0]);
-
+                  
+                  //System.out.println(t_session.toString());
+                  
+                  
                   int firstLine = calculateFirstLine(t_session, freq, t_image); 
                   int lastLine = calculateLastLine(t_session, freq, t_image);
                   
@@ -114,15 +145,15 @@ public class ElaboraDatasets {
                   
                   for(; line<=lastLine; line++){
                       String cadena = b.readLine();
-                      cadena += ";" + t_session.toString();
-                      f_write.write(cadena);
+                      cadena += ";" + new Timestamp(t_session.getTime() + ((line/freq)*1000));
+                      f_write.write(cadena + "\n");
                   }
                   
                   f_write.close();
                   f_read.close();
                   
               }catch(FileNotFoundException e){
-                  System.err.println("ERROR. Fichero " + nameFileToRead(n_file, 1) + " no encontrado");
+                  System.err.println(e);
               }catch(IOException e){
                   System.err.print(e);
               }
@@ -143,7 +174,7 @@ public class ElaboraDatasets {
                     //Date d = new Date();
                     Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(buffer.readLine());
                     Timestamp t_image = new Timestamp(d.getTime());
-                    System.out.println(t_image.toString());
+                    //System.out.println(t_image.toString());
                     //t_image = new Timestamp(DateFormat.parse(buffer.readLine()));
                     //System.out.println(t_image.toString());
                     
