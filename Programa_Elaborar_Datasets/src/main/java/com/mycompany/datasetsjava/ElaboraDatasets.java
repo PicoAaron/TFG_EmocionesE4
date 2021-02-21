@@ -40,8 +40,8 @@ public class ElaboraDatasets {
             case 1: return dir + "ACC.csv";
             case 2: return dir + "BVP.csv";
             case 3: return dir + "HR.csv";
-            case 4: return dir + "IBI.csv";
-            case 5: return dir + "TEMP.csv";
+            case 4: return dir + "TEMP.csv";
+            //case 5: return dir + "IBI.csv";
             default: return null;
         }
         
@@ -55,8 +55,9 @@ public class ElaboraDatasets {
             case 1: file = "ACC"; break;
             case 2: file = "BVP"; break;
             case 3: file = "HR"; break;
-            case 4: file = "IBI"; break;
-            case 5: file = "TEMP"; break;
+            case 4: file = "TEMP"; break;
+            //case 5: file = "IBI"; break;
+            
         }
         
         String dir = dir_write + "/" + Integer.toString(person) + "/";
@@ -108,18 +109,18 @@ public class ElaboraDatasets {
         fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/HR_" + Integer.toString(n_person)) ;
         fichero.mkdirs();
         
-        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
-        fichero.mkdirs();
-        
         fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/TEMP_" + Integer.toString(n_person)) ;
         fichero.mkdirs();
+        
+        //fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
+        //fichero.mkdirs();
         
         
     }
     
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
     
-        for(int n_file=0; n_file<=5; n_file++){
+        for(int n_file=0; n_file<=4; n_file++){
             createDirs(n_person);
               try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
