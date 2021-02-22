@@ -6,34 +6,34 @@
 package com.mycompany.emocionesjava;
 
 import java.io.*;
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+//import javax.swing.JLabel;
+//import javax.swing.SwingConstants;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
+//import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.Image;
-import java.net.URL;
+//import java.net.URL;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
+//import java.text.SimpleDateFormat;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+//import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.geometry.NodeOrientation;
+//import javafx.geometry.NodeOrientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+//import javax.swing.JButton;
+//import javax.swing.JPanel;
 
 /**
  *
@@ -406,7 +406,8 @@ public class ImageWindow extends javax.swing.JFrame {
                     number++;
                     count++;
                     t = new Timestamp(System.currentTimeMillis());
-                    f_times.write(cadena + " " + t.toString() + "\n");
+                    //f_times.write(cadena + " " + t.toString() + "\n");
+                    f_times.write(t.toString() + "\n");
                     w.getContentPane().setBackground(java.awt.Color.WHITE);
                     w.imageInBetween();
                     w.wait(time_imageInBetween);

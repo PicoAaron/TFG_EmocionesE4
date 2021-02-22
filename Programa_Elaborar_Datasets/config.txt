@@ -1,0 +1,4 @@
+Number_participants: 3
+Number_images: 50
+seconds_before: 2
+seconds_after: 3

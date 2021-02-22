@@ -28,8 +28,61 @@ public class ElaboraDatasets {
     private static FileWriter f_write;
     static String dir_read = "Data";
     static String dir_write = "Dataset";
-    static final int num_images = 50;
-    static final int num_persons = 1;
+    static int num_images = 50;
+    static int num_persons = 1;
+    static float seconds_before = 2;
+    static float seconds_after = 3;
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+    
+    
+    private static void init_values(){
+        
+        try{
+            String cadena;
+            String[] value;
+            FileReader file_config = new FileReader("config.txt");
+            BufferedReader b_config = new BufferedReader(file_config);
+            
+            //Numero de sesiones para el dataset
+            if((cadena = b_config.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                num_persons = Integer.parseInt(value[1]);
+            }
+            
+            //Numero de imagenes que se evaluan
+            if((cadena = b_config.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                num_images = Integer.parseInt(value[1]);
+            }
+            
+            //Número de segundos antes del timestamp de la imagen en el que queremos
+            //comenzar a coger las muestras
+            if((cadena = b_config.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                seconds_before = Float.parseFloat(value[1]);
+            }
+            
+            //Número de segundos después del timestamp de la imagen en el que queremos
+            //que se termine la recogida de muestras para esa imagen
+            if((cadena = b_config.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                seconds_after = Float.parseFloat(value[1]);
+            }
+            
+            
+            file_config.close();
+            b_config.close();
+            
+        }catch(Exception e){
+            System.err.println(e);
+        }
+        
+    }
+    
     
     private static String nameFileToRead(int i, int person){
     
@@ -70,12 +123,12 @@ public class ElaboraDatasets {
     private static int calculateFirstLine(Timestamp t_session, int freq, Timestamp t_image){
         //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
         //recoger las muestras dentro de un rango de tiempo
-        long t_i = t_image.getTime() - (2 * 1000);
+        long t_i = t_image.getTime() - (int)(seconds_before * 1000);
         long t_s = t_session.getTime();
         
         int line = (int)((t_i - t_s)/1000) * freq;
         
-        System.out.println(line);
+        //System.out.println(line);
         
         return  line;
     }
@@ -84,12 +137,12 @@ public class ElaboraDatasets {
         //Primero restaremos unos segundos al tiempo de la imagen, porque queremos
         //recoger las muestras dentro de un rango de tiempo
         
-        long t_i = t_image.getTime() + (3 * 1000);
+        long t_i = t_image.getTime() + (int)(seconds_after * 1000);
         long t_s = t_session.getTime();
         
         int line = (int)((t_i - t_s)/1000) * freq;
         
-        System.out.println(line);
+        //System.out.println(line);
         
         return line;
     }
@@ -146,7 +199,7 @@ public class ElaboraDatasets {
                   
                   for(; line<=lastLine; line++){
                       String cadena = b.readLine();
-                      cadena += ";" + new Timestamp(t_session.getTime() + ((line/freq)*1000));
+                      cadena += ";" + new Timestamp(t_session.getTime() + ((line/freq)*1000)).toString();
                       f_write.write(cadena + "\n");
                   }
                   
@@ -164,6 +217,8 @@ public class ElaboraDatasets {
     
     
     public static void main(String args[]) throws ParseException{
+        
+        init_values();
     
         for(int n_person = 1; n_person<=num_persons; n_person++){
             
@@ -173,7 +228,7 @@ public class ElaboraDatasets {
                 
                 for(int n_image = 1; n_image<=num_images; n_image++){
                     //Date d = new Date();
-                    Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(buffer.readLine());
+                    Date d = sdf.parse(buffer.readLine());
                     Timestamp t_image = new Timestamp(d.getTime());
                     //System.out.println(t_image.toString());
                     //t_image = new Timestamp(DateFormat.parse(buffer.readLine()));

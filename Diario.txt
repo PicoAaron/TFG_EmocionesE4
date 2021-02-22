@@ -116,8 +116,7 @@ Que aún desconocemos a que atenernos para evitar fallos como el efecto halo.
 	Después de leer el timestamp de una imagen, a partir de del timestamp inicial y de la frecuencia de muestreo calcular la línea inicial
 	y final de muestras a obtener.
 	
-	La segunda opción sería más rápida si podemos diriginos directamente a una línea en concreto del fichero, ya que con la opción 1 tendríamos
-	que ir leyendo timestamps uno a uno hasta obtener los deseados.
+	La segunda opción sería más rápida, ya que con la opción 1 tendríamos que ir leyendo timestamps uno a uno hasta obtener los deseados.
 
 	Así que la opción 2 será la que implementaré en un principio.
 
