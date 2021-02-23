@@ -156,6 +156,69 @@ Que aún desconocemos a que atenernos para evitar fallos como el efecto halo.
 				Valor 2; timestamp 2
 				...
 			
-				
+11) Diseño final.
+	- No se realiza el paso intemedio. El dataset final se obtiene calculando, con el timestamp del inicio de la sesión y el de
+	cuando se ha visualizado la imagen, qué líneas del fichero csv contienen las muestras correspondientes  		
 
+	La fórmula con la que se obtiene esto es la siguiente: linea = (t_image - t_inicio) * sample_rate
+
+	Para todos los cálculos tener en cuenta que los timestamps se expresan en milisegundos, por tanto, si el sample_rate está en
+	segundos como era nuestro caso, se debe multiplicar por 1000 antes de las operaciones.
+	También tenerlo en cuenta cuando queremos asignar el rango de tiempo en el que se seleccionan las muestras. Debemos sumarle o
+	restarle segundos*1000.
+
+
+	La estructura final queda así:
+
+	El directorio Data es en la que dispondremos los datos de las sesiones. Cada sesión en un directorio diferente llamado por un número,
+	en orden desde 1 hasta la sesión última. En el driectorio de cada sesión también disponemos el fichero timestamps.txt generado por el
+	programa que presentaba las imágenes al participante.
+
+
+	Data
+            |----1
+            |     |----timestamps.txt
+            |     |----EDA.csv
+            |     |----ACC.csv
+            |     [...]
+       	    |
+            |----2
+                  |----timestamps.txt
+                  |----EDA.csv
+                  |----ACC.csv
+                  [...]
+
+
+	El resultado es el directorio generado Dataset. Sigue la misma estructura que Data, pero en lugar de estar los ficheros directamente
+	en el directorio de cada sesión, cada tipo de dato tiene su directorio específico en el que se licalizarán los ficheros csv. Un fichero
+	por imagen, denominado por ejemplo para el dato EDA: EDA_<num_sesión>_<num_imagen>.
+
+
+	Dataset
+            |----1
+            |     |----EDA_1
+            |     |        |----EDA_1_1.csv
+            |     |        |----EDA_1_2.csv
+            |     |        [...]
+            |     |
+            |     |----ACC_1
+            |     |        |----ACC_1_1.csv
+            |     |        |----ACC_1_2.csv
+            |     |        [...]
+            |     [...]
+            |
+            |----2
+                 |----EDA_2
+                 |        |----EDA_2_1.csv
+                 |        |----EDA_2_2.csv
+                 |        [...]
+                 |
+                 |----ACC_2
+                 |        |----ACC_2_1.csv
+                 |        |----ACC_2_2.csv
+                 |        [...]
+                 [...]
+
+
+	
 		
