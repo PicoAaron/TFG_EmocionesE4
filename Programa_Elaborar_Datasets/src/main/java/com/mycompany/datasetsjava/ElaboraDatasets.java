@@ -28,7 +28,7 @@ public class ElaboraDatasets {
     private static FileWriter f_write;
     static String dir_read = "Data";
     static String dir_write = "Dataset";
-    static int num_images = 50;
+    static int num_images = 150;
     static int num_persons = 1;
     static float seconds_before = 2;
     static float seconds_after = 3;
@@ -94,7 +94,7 @@ public class ElaboraDatasets {
             case 2: return dir + "BVP.csv";
             case 3: return dir + "HR.csv";
             case 4: return dir + "TEMP.csv";
-            //case 5: return dir + "IBI.csv";
+            case 5: return dir + "IBI.csv";
             default: return null;
         }
         
@@ -109,7 +109,7 @@ public class ElaboraDatasets {
             case 2: file = "BVP"; break;
             case 3: file = "HR"; break;
             case 4: file = "TEMP"; break;
-            //case 5: file = "IBI"; break;
+            case 5: file = "IBI"; break;
             
         }
         
@@ -147,6 +147,7 @@ public class ElaboraDatasets {
         return line;
     }
     
+    
     private static void createDirs(int n_person){
         File fichero;
         
@@ -165,10 +166,64 @@ public class ElaboraDatasets {
         fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/TEMP_" + Integer.toString(n_person)) ;
         fichero.mkdirs();
         
-        //fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
-        //fichero.mkdirs();
+        fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
+        fichero.mkdirs();
         
         
+    }
+    
+    private static void fileIBI(int n_person, int n_image, Timestamp t_image){
+        try{
+            String cadena = "";
+            f_read = new FileReader(nameFileToRead(5, n_person));
+            f_write = new FileWriter(nameFileToWrite(5, n_person , n_image));
+
+            b = new BufferedReader(f_read);
+
+            Timestamp t_session = new Timestamp( Long.parseLong( b.readLine().split("\\.")[0] ) *1000 );
+
+            System.out.println("Tiempo imagen: " + t_image.toString());
+            System.out.println(t_session.toString());
+            
+
+            long t_i = t_image.getTime() - (int)(seconds_before * 1000);
+            long t_s = t_session.getTime();
+            long t_new;
+            double seconds;
+            
+            
+            //Descartamos las líneas anteriores al tiempo que buscamos 
+            /*do{
+                seconds = Double.parseDouble(b.readLine().split(",")[0]);
+                t_new = t_s + (long)(seconds * 1000);
+                System.out.println(new Timestamp(t_new));
+            }while(t_new < t_i);*/
+            
+            while( (cadena = b.readLine()) != null ){
+                seconds = Double.parseDouble(cadena.split(",")[0]);
+                t_new = t_s + (long)(seconds * 1000);
+                if(t_new > t_i) break;
+                System.out.println(new Timestamp(t_new));
+            }
+
+            t_i = t_image.getTime() + (int)(seconds_after * 1000);
+            
+            //Guardamos las líneas en el rango de tiempo
+            while( (cadena = b.readLine()) != null ){
+                seconds = Double.parseDouble(cadena.split(",")[0]);
+                t_new = t_s + (long)(seconds * 1000);
+                if(t_new > t_i) break;
+                else f_write.write(cadena + "\n");
+            }
+
+            f_write.close();
+            f_read.close();
+
+        }catch(FileNotFoundException e){
+            System.err.println(e);
+        }catch(IOException e){
+            System.err.print(e);
+        }
     }
     
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
@@ -211,7 +266,10 @@ public class ElaboraDatasets {
               }catch(IOException e){
                   System.err.print(e);
               }
+
           }
+        
+        fileIBI(n_person, n_image, t_image);
     
     }
     
