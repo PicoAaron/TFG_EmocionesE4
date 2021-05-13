@@ -49,12 +49,14 @@ public class ImageWindow extends javax.swing.JFrame {
     private static String video_file = "latemo/video.mp4";
     //private static String imageInBetween_file = "images/black.jpg"; 
     private static int time_image = 5;
-    private static int time_imageInBetween = 5;
+    private static int time_rest_between_images = 4;
     private static int time_video = 68;
-    private static int time_rest = 15;
+    private static int time_rest_between_blocks = 15;
+    private static int total_images = 72;
     
     private static int number = 0;
     private static int count = 0;
+    private static int num_block = 18;
     
     public static boolean start = false;
     
@@ -67,6 +69,7 @@ public class ImageWindow extends javax.swing.JFrame {
      * Creates new form ImageWindow
      */
     public ImageWindow() {
+        init_values();
         initComponents();
     }
     
@@ -90,7 +93,21 @@ public class ImageWindow extends javax.swing.JFrame {
             if((cadena = buffer.readLine())!=null){
                 System.out.println(cadena);
                 value = cadena.split("\\p{Space}+");
-                time_imageInBetween = Integer.parseInt(value[1]);
+                time_rest_between_images = Integer.parseInt(value[1]);
+            }
+            
+            //Number of images per block
+            if((cadena = buffer.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                num_block = Integer.parseInt(value[1]);
+            }
+            
+            //Rest time between blocks
+            if((cadena = buffer.readLine())!=null){
+                System.out.println(cadena);
+                value = cadena.split("\\p{Space}+");
+                time_rest_between_blocks = Integer.parseInt(value[1]);
             }
             
             //Images file
@@ -128,7 +145,7 @@ public class ImageWindow extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error leyendo config.txt\nSe cargrán los valores por defecto.");
             time_image = 1;
-            time_imageInBetween = 4;
+            time_rest_between_images = 4;
             time_video = 70;
             //imageInBetween_file = "images/black.jpg";
             images_file = "images.txt";
@@ -186,6 +203,18 @@ public class ImageWindow extends javax.swing.JFrame {
     public void rest(){
         image.setIcon(null);
         image.setText("Descanso (15 segundos)");
+    }
+    
+    public void showImage(String cadena) throws IOException{
+        this.getContentPane().setBackground(java.awt.Color.BLACK);
+        this.next_img(cadena);
+        this.wait(time_image);
+        Timestamp t = new Timestamp(System.currentTimeMillis());
+        //f_times.write(cadena + " " + t.toString() + "\n");
+        f_times.write(t.toString() + " " + cadena +"\n");
+        this.getContentPane().setBackground(java.awt.Color.WHITE);
+        this.imageInBetween();
+        this.wait(time_rest_between_images);
     }
     
     
@@ -251,21 +280,22 @@ public class ImageWindow extends javax.swing.JFrame {
         jPanel1.add(jLabel1);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("Se presentarán un total de 150 imágenes, con breves descansos de");
+        jLabel3.setText("Se presentarán un total de " + total_images + " imágenes, con breves descansos de");
         jPanel1.add(jLabel3);
+        jLabel3.getAccessibleContext().setAccessibleName("");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("15 segundos tras cada 25 imágenes.");
+        jLabel2.setText(time_rest_between_blocks + " segundos tras cada " + num_block + " imágenes.");
         jPanel1.add(jLabel2);
         jPanel1.add(jLabel10);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel4.setText("Cada imagen se mostrará durante 1 segundo, y a continuación");
+        jLabel4.setText("Cada imagen se mostrará durante " + time_image + " segundos, y a continuación");
         jLabel4.setToolTipText("");
         jPanel1.add(jLabel4);
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("aparecerá una pantalla en blanco durante 4 segundos.");
+        jLabel8.setText("aparecerá una pantalla en blanco durante " + time_rest_between_images + " segundos.");
         jPanel1.add(jLabel8);
         jPanel1.add(jLabel9);
 
@@ -303,7 +333,6 @@ public class ImageWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     
-    
     /**
      * @param args the command line arguments
      */
@@ -313,6 +342,7 @@ public class ImageWindow extends javax.swing.JFrame {
         
         
         ImageWindow w = new ImageWindow();
+        //w.init_values();
         w.image.setFont(new Font("Serif", Font.BOLD, 48));
         
         //w.jButton2.setBackground(Color.LIGHT_GRAY);
@@ -327,7 +357,7 @@ public class ImageWindow extends javax.swing.JFrame {
         w.setExtendedState(JFrame.MAXIMIZED_BOTH);
         w.image.setHorizontalAlignment(CENTER);
         w.setVisible(true);
-        w.init_values();
+        //w.init_values();
         
         while(!start){
             w.image.setText(null);
@@ -386,7 +416,7 @@ public class ImageWindow extends javax.swing.JFrame {
         
         w.getContentPane().setBackground(java.awt.Color.WHITE);
         
-        w.wait(time_imageInBetween);
+        w.wait(time_rest_between_images);
         
         
         //Comienzan las imagenes
@@ -399,25 +429,21 @@ public class ImageWindow extends javax.swing.JFrame {
             Timestamp t;
             
             while((cadena = b.readLine()) != null){  
-                if(count<25){
-                    w.getContentPane().setBackground(java.awt.Color.BLACK);
-                    w.next_img(cadena);
-                    w.wait(time_image);
+                if(count<num_block){
                     number++;
                     count++;
-                    t = new Timestamp(System.currentTimeMillis());
-                    //f_times.write(cadena + " " + t.toString() + "\n");
-                    f_times.write(t.toString() + "\n");
-                    w.getContentPane().setBackground(java.awt.Color.WHITE);
-                    w.imageInBetween();
-                    w.wait(time_imageInBetween);
+                    w.showImage(cadena);
                 }
                 else{
                     w.getContentPane().setBackground(java.awt.Color.WHITE);
                     f_times.flush();
                     w.rest();
-                    w.wait(time_rest);
+                    w.wait(time_rest_between_blocks);
                     count = 0;
+                    
+                    number++;
+                    count++;
+                    w.showImage(cadena);
                 }
             }
             f_times.close();
@@ -425,7 +451,7 @@ public class ImageWindow extends javax.swing.JFrame {
             w.image.setText("¡Gracias por su participación!");
             
         }catch(FileNotFoundException e){
-            JOptionPane.showMessageDialog(null, "Error. No se ha podido acceder al fichero images.txt");
+            JOptionPane.showMessageDialog(null, "Error. No se ha podido acceder al fichero " + images_file);
         }catch(IOException e){
         
         }

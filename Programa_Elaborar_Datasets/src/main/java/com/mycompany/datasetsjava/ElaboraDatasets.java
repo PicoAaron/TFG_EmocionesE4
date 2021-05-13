@@ -28,7 +28,7 @@ public class ElaboraDatasets {
     private static FileWriter f_write;
     static String dir_read = "Data";
     static String dir_write = "Dataset";
-    static int num_images = 150;
+    static int num_images = 72;
     static int num_persons = 1;
     static float seconds_before = 2;
     static float seconds_after = 3;
@@ -94,7 +94,7 @@ public class ElaboraDatasets {
             case 2: return dir + "BVP.csv";
             case 3: return dir + "HR.csv";
             case 4: return dir + "TEMP.csv";
-            case 5: return dir + "IBI.csv";
+            //case 5: return dir + "IBI.csv";
             default: return null;
         }
         
@@ -109,7 +109,7 @@ public class ElaboraDatasets {
             case 2: file = "BVP"; break;
             case 3: file = "HR"; break;
             case 4: file = "TEMP"; break;
-            case 5: file = "IBI"; break;
+            //case 5: file = "IBI"; break;
             
         }
         
@@ -166,12 +166,14 @@ public class ElaboraDatasets {
         fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/TEMP_" + Integer.toString(n_person)) ;
         fichero.mkdirs();
         
+        /*
         fichero = new File(dir_write + "/" + Integer.toString(n_person) + "/IBI_" + Integer.toString(n_person)) ;
         fichero.mkdirs();
-        
+        */
         
     }
     
+    /*
     private static void fileIBI(int n_person, int n_image, Timestamp t_image){
         try{
             String cadena = "";
@@ -197,7 +199,7 @@ public class ElaboraDatasets {
                 seconds = Double.parseDouble(b.readLine().split(",")[0]);
                 t_new = t_s + (long)(seconds * 1000);
                 System.out.println(new Timestamp(t_new));
-            }while(t_new < t_i);*/
+            }while(t_new < t_i);*//*
             
             while( (cadena = b.readLine()) != null ){
                 seconds = Double.parseDouble(cadena.split(",")[0]);
@@ -225,7 +227,8 @@ public class ElaboraDatasets {
             System.err.print(e);
         }
     }
-    
+    */
+
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
     
         for(int n_file=0; n_file<=4; n_file++){
@@ -269,7 +272,7 @@ public class ElaboraDatasets {
 
           }
         
-        fileIBI(n_person, n_image, t_image);
+        //fileIBI(n_person, n_image, t_image);
     
     }
     
