@@ -232,7 +232,7 @@ public class ElaboraDatasets {
     private static void makeDataset(int n_person, int n_image, Timestamp t_image){
     
         for(int n_file=0; n_file<=4; n_file++){
-            createDirs(n_person);
+            //createDirs(n_person);
               try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
                   f_write = new FileWriter(nameFileToWrite(n_file, n_person , n_image));
@@ -276,6 +276,51 @@ public class ElaboraDatasets {
     
     }
     
+    private static void baseLine (int n_person) throws ParseException, FileNotFoundException, IOException {
+        
+        f_times_images = new FileReader(dir_read + "/" + Integer.toString(n_person) + "/timestamps.txt");
+        buffer = new BufferedReader(f_times_images);
+        
+        Date d = sdf.parse(buffer.readLine());
+        Timestamp t_image = new Timestamp(d.getTime());
+        
+        for(int n_file=0; n_file<=4; n_file++){
+            //createDirs(n_person);
+            try{
+                  f_read = new FileReader(nameFileToRead(n_file, n_person));
+                  f_write = new FileWriter(nameFileToWrite(n_file, n_person , 0));
+
+                  b = new BufferedReader(f_read);
+                  
+                  Timestamp t_session = new Timestamp( Long.parseLong( b.readLine().split("\\.")[0] ) *1000 );
+                  int freq = Integer.parseInt(b.readLine().split("\\.")[0]);
+                                
+                  int line_first_image = calculateFirstLine(t_session, freq, t_image); 
+                  
+                  int line=0;
+                  
+                  for(; line<line_first_image; line++){
+                      String cadena = b.readLine();
+                      cadena += ";" + new Timestamp(t_session.getTime() + ((line/freq)*1000)).toString();
+                      f_write.write(cadena + "\n");
+                  }
+                  
+                  f_write.close();
+                  f_read.close();
+                  
+              }catch(FileNotFoundException e){
+                  System.err.println(e);
+              }catch(IOException e){
+                  System.err.print(e);
+              }
+
+        }
+        
+        f_times_images.close();
+        buffer.close();
+        
+    }
+    
     
     public static void main(String args[]) throws ParseException{
         
@@ -284,8 +329,13 @@ public class ElaboraDatasets {
         for(int n_person = 1; n_person<=num_persons; n_person++){
             
             try{
+                createDirs(n_person);
+                
+                baseLine(n_person);
+                
                 f_times_images = new FileReader(dir_read + "/" + Integer.toString(n_person) + "/timestamps.txt");
                 buffer = new BufferedReader(f_times_images);
+                
                 
                 for(int n_image = 1; n_image<=num_images; n_image++){
                     //Date d = new Date();
