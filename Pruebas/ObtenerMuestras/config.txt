@@ -1,0 +1,7 @@
+Time_per_image: 8
+Rest_time_between_images: 8
+Number_of_images_per_block: 18
+Rest_time_between_blocks: 15
+Images_file->images.txt
+Initial_video->latemo/video.mp4
+Duration_video: 70
