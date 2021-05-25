@@ -116,7 +116,8 @@ public class ElaboraDatasets {
         String dir = dir_write + "/" + Integer.toString(person) + "/";
         dir += file + "_" + Integer.toString(person) +"/";
         
-        return dir + file + "_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
+        if(image!=0) return dir + file + "_" + Integer.toString(person) + "_" + Integer.toString(image) + ".csv";
+        else return dir + file + "_" + Integer.toString(person) + "_baseline.csv";
         
     }
     
@@ -229,13 +230,14 @@ public class ElaboraDatasets {
     }
     */
 
-    private static void makeDataset(int n_person, int n_image, Timestamp t_image){
+    private static void makeDataset(int n_person, int n_image, Timestamp t_image, String nombre_imagen){
     
         for(int n_file=0; n_file<=4; n_file++){
             //createDirs(n_person);
               try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
                   f_write = new FileWriter(nameFileToWrite(n_file, n_person , n_image));
+                  f_write.write(nombre_imagen + "\n");
 
                   b = new BufferedReader(f_read);
                   
@@ -289,6 +291,8 @@ public class ElaboraDatasets {
             try{
                   f_read = new FileReader(nameFileToRead(n_file, n_person));
                   f_write = new FileWriter(nameFileToWrite(n_file, n_person , 0));
+                  f_write.write("baseline\n");
+                  
 
                   b = new BufferedReader(f_read);
                   
@@ -339,13 +343,15 @@ public class ElaboraDatasets {
                 
                 for(int n_image = 1; n_image<=num_images; n_image++){
                     //Date d = new Date();
-                    Date d = sdf.parse(buffer.readLine());
+                    String leido = buffer.readLine();
+                    String nombre_imagen = leido.split(" ")[2];
+                    Date d = sdf.parse(leido);
                     Timestamp t_image = new Timestamp(d.getTime());
                     //System.out.println(t_image.toString());
                     //t_image = new Timestamp(DateFormat.parse(buffer.readLine()));
                     //System.out.println(t_image.toString());
                     
-                    makeDataset(n_person, n_image, t_image);
+                    makeDataset(n_person, n_image, t_image, nombre_imagen);
                 }
         
             }catch(FileNotFoundException e){
