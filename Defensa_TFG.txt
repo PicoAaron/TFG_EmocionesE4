@@ -1,0 +1,149 @@
+
+INTRODUCCIÓN
+-----------------------------------------------------------------------------------------
+
+Buenos días, mi nombre es Aarón y mi proyecto consiste en la Creación de datasets
+para la estimación de emociones empleando un apulsera inteligente.
+
+El objetivo mayor planteado que da por qué a este trabajo es poder conocer el
+estado emocional de una persona a partir de sus señales fisiológicas, las cuales
+se obtendrían de una pulsera inteligente, que para el caso que nos ocupa es la
+Empatica E4 Wristband.
+
+Aunque el tabajo de este proyecto concreto trata de un primer paso hacia este objetivo,
+siendo la implementación de las herramientas necesarias para crear el conjunto de
+datos que poder utilizar posteriormente con algoritmos de Machine Learning o Deep Learning.
+
+-----------------------------------------------------------------------------------------
+
+
+
+EXPLICACIÓN DE SEÑALES FISIOLÓGICAS Y EMOCIONES (VALENCE AND AROUSAL)
+-----------------------------------------------------------------------------------------
+
+La pulsera Empatica E4 incorpora diferentes sensores que le permiten capturar señales
+fisiológicas como la frecuencia cardíaca o la actividad electrodérmica.
+
+Y como hemos mencionado, queremos relacionar estos datos con el estado emocional de la
+persona; que representaremos mediante el extendido modelo de Valence and Arousal, el cual
+establece dos escalas que permiten esta representación. Valence, que es una escala de
+placer-disgusto; y Arousal que es una escala de la activación o excitación producidas.
+
+Otro punto importante a tratar es lo que se conoce como baseline, que en palabras sencillas
+sería el estado base o normal que presenta una persona en concreto y que nos sirve para
+poner en contexto las medidas tomadas a esta misma.
+
+-----------------------------------------------------------------------------------------
+
+
+
+IMPLEMENTACIÓN - FASE 1: HERRAMIENTA PARA OBTENER MUESTRAS
+-----------------------------------------------------------------------------------------
+
+Ahora vamos a ver cómo se ha realizado esta tarea, que se divide en tres fases.
+
+La primera de estas fases corresponde a la implementación de un programa que nos permita
+la inducción de emociones a los voluntarios, basado en la presentación de imágenes de
+diferente naturaleza.
+
+Las imágenes utilizadas pertenecen al dataset EmoMadrid, elaborado por el grupo "Cerebro
+Afecto y Cognición" de la Universidad Autónoma de Madrid; y que cuentan con los valores
+de Valence y Arousal que suscitaron en los participantes de dicho proyecto.
+
+Y asesorados por el grupo investigación "Psicología Aplicada a la Salud y Comportamiento
+Humano" de la Universidad de Alicante, estas imágenes se mostrarán en  4 bloques de 18,
+cada uno de los cuales siguiendo el patrón descrito en el diagrama de la derecha. Mostrando
+4 imágenes de carácter positivo, una neutral y 4 negativas; y las siguientes 9 imágenes
+volviendo a repetir este orden.
+
+Al programa se le indican las rutas a las imágenes que queremos que se muestren en un
+fichero de texto, en el mismo orden en que aparecerán, de forma que podremos elegir
+manualmente las mismas, pero también se ha implementado otro programa que genere este
+archivo con las rutas de manera automática siguiendo el patrón a utilizar.  
+
+Para obtener muestras que vincular al baseline del participante hemos decidido mostrar un
+video al inicio de la prueba de alrededor de un minuto de duración que suscita una emoción
+neutra, perteneciente al dataset LATEMO-E.
+
+Como resultado de la ejecución de este programa se obtiene un fichero de texto con los
+instantes de tiempo en el que se ha visualizado cada imagen y su nombre.
+
+-----------------------------------------------------------------------------------------
+
+
+
+IMPLEMENTACIÓN - FASE 2: HERRAMIENTA PARA GENERAR EL DATASET
+-----------------------------------------------------------------------------------------
+
+La segunda fase supone que ya disponemos de los datos necesarios para formar nuestro
+dataset y consiste en automatizar la generación del mismo mediante un programa que vincule
+las imágenes que estaba visualizando el participante con los datos capturados por la
+pulsera en dicho momento.
+
+Para ello dispondremos los datos en un directorio Data siguiendo la siguiende estructura,
+un subdirectorio para cada participante donde se colocan los datos de la pulsera y el
+fichero de tiempos resultado del programa anterior.
+
+El programa implementado generará entonces el directorio Dataset, que siguiendo una
+estructura similar, contendrá un subdirectorio para cada participante. Pero ahora en este
+se encontrará un subdirectorio por cada tipo de dato, con los ficheros csv correspondientes
+a los valores capturados para ese participante con dicha imagen o el baseline.
+
+Como es mencionado en este apartado, los ficheros generados por la pulsera tienen indicado
+en la primera línea el instante inicial, en el que comienza la captura de datos, y la
+frecuencia de muestreo o sample rate. A partir de la tercera línea hasta el final encontramos
+solo los diferentes valores, uno por línea.
+
+Aunque no se muestra directamente a en qué instante se capturó cada valor, podemos con estos
+dos datos calcular este instante; o bien, para un instante en concreto, calcular que línea o
+muestra le corresponde, con la ecuación mostrada. Aunque en realidad no buscamos la muestra
+de un instante específico sino un rango de muestras alrededor de este; por lo que en la
+práctica calcularemos la línea inicial y final y recogeremos todas las muestras entre las
+mismas.  
+
+-----------------------------------------------------------------------------------------
+
+
+IMPLEMENTACIÓN - FASE 3: PRUEBAS CON VOLUNTARIOS
+-----------------------------------------------------------------------------------------
+
+En este punto, ya disponemos de las herramientas necesarias para realizar todo el proceso
+en la obtención del dataset. Por lo que el siguiente paso es la utilización de las mimas
+en pruebas realizadas a voluntarios.
+
+Debido a la situación actual no ha sido posible realizarlas de manera extensa, pero sí se
+han preparado y se han realizado algunas para comprobar el correcto funcionamiento de las
+diferentes partes.
+
+Estas pruebas tienen diferentes condiciones a tener en cuenta. No deben darse estímulos
+externos, la sala debe contar con demasiada luminosidad y de debe procurar que el
+participante debe esté tranquilo.
+
+Se ha elaborado también una hoja con información e instrucciones para ser leída por los
+participantes antes de la realización de la prueba, en la que se indica en qué consiste y 
+cómo se va a realizar. Esto además reducirá la incertidumbre lo que por¡dría evitar que
+la persona estuviera en un estado de alerta o nerviosismo. Con esti en mente también le
+es indicado que el propósito no es evaluarlo y que no hay un resultado positivo o negativo.
+
+
+-----------------------------------------------------------------------------------------
+
+
+RESULTADOS Y CONCLUSIÓN
+-----------------------------------------------------------------------------------------
+
+El conjunto de datos resultante facilita el análisis y procesamiento de los datos,
+pudiendo obtener los datos para un participante e imagen concretos de manera rápida y
+simple.
+
+Para ejemplificarlo se ha implementado un sencillo código en un cuaderno de Google Colab
+que mediante el dataset generado nos muestra las gráficas de las diferentes señales para un
+voluntario e imagen concretos que le indiquemos como las que se muetran en la tabla para 
+la frecuencia cardíaca y la actividad electrodérmica o respuesta galvánica de la piel.
+
+Así se ha conseguido poder generar un dataset que permita la vinculación de las respuestas
+fisiológicas con unos valores de valence y arousal determinados, o estado emocional, que
+podrá ser utilizado en siguientes proyectos para la predicción de las emociones únicamente
+con las señales fisiológicas.
+
+-----------------------------------------------------------------------------------------
